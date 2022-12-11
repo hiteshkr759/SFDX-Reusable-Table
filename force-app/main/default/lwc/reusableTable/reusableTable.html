@@ -1,0 +1,21 @@
+<template>
+    <div if:true={isEmptyRow}>
+        No Data Found.
+    </div>
+    <table if:false={isEmptyRow} class={mainProcessedClass} aria-labelledby="element-with-table-label other-element-with-table-label">
+        <thead>
+            <tr class="slds-line-height_reset" if:true={proccessedShowHead}>
+                <th style={thead.style} class={thead.className} scope="col" for:each={processedTableHead} for:item="thead" key={thead.key} if:true={thead.showColumn}>
+                    <div class="slds-line-clamp" title={thead.label}>{thead.label}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent" for:each={tableData} for:item="tdata" key={tdata.key} >
+                <td style={thead.style} class={thead.className} data-label={thead.label} scope="row" for:each={processedTableHead} for:item="thead" if:true={thead.showColumn}  key={thead.key}>
+                    <c-reusable-table-cell t-head={thead} t-data={tdata}></c-reusable-table-cell>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</template>

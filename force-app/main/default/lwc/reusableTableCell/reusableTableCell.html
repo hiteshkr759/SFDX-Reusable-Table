@@ -1,0 +1,126 @@
+<template>
+    <template if:true={processedTHead.isRecordLink}>
+        <div class="slds-line-clamp record-link" if:true={isInputConfig}>
+            <lightning-button variant="base" label={cellValue} title={cellValue} data-record-id={processedTHead.inputConfig.recordId} onclick={handleRecordLink}></lightning-button>
+        </div>
+    </template>
+    <template if:true={processedTHead.isStaticText}>
+        <div class="slds-line-clamp static-text">
+            <div title={cellValue}>{cellValue}</div>
+        </div>
+    </template>
+    <template if:true={processedTHead.isStaticTextWithHelpText}>
+        <div class="slds-line-clamp static-text-with-help-text">
+            <div>   
+                <span title={cellValue} class="text slds-m-right_xx-small">{cellValue}</span>
+                <span class="help-text slds-m-left_xx-small" if:true={isInputConfig}>
+                    <lightning-helptext content={processedTHead.inputConfig.helpText}></lightning-helptext>
+                </span>
+            </div>
+        </div>
+    </template>
+    <template if:true={processedTHead.isContentDocument}>
+        <div class="slds-line-clamp content-document">
+            <div>
+                <span class="help-text slds-m-left_xx-small" if:true={isInputConfig}>
+                    <span onclick={handlePreviewContentDocument} data-content-document-id={processedTHead.inputConfig.ContentDocument.Id}>{processedTHead.inputConfig.ContentDocument.FileName}</span>
+                </span>
+            </div>
+        </div>
+    </template>
+    <template if:true={processedTHead.isEditableField}>
+        <template if:true={isInputConfig}>
+            <!-- Input config is present  -->
+            <template if:true={isInputPickList}>
+                <!-- Picklist - cellValue {cellValue} -->
+                <lightning-combobox
+                    label={processedTHead.inputConfig.label}
+                    value={cellValue}
+                    variant={processedTHead.inputConfig.variant}
+                    disabled={processedTHead.inputConfig.disabled}
+                    placeholder={processedTHead.inputConfig.placeholder}
+                    options={processedTHead.inputConfig.options}
+                    required={processedTHead.inputConfig.required} 
+                    onchange={handleInputChange}
+                ></lightning-combobox>
+            </template>
+            <template if:true={isInputTypeNumber}>
+                <lightning-input 
+                    required={processedTHead.inputConfig.required} 
+                    step={processedTHead.inputConfig.step}
+                    min={processedTHead.inputConfig.min} 
+                    placeholder={processedTHead.inputConfig.placeholder}
+                    type={processedTHead.inputConfig.type} 
+                    variant={processedTHead.inputConfig.variant} 
+                    disabled={processedTHead.inputConfig.disabled}
+                    value={cellValue}
+                    label={processedTHead.inputConfig.label} 
+                    onchange={handleInputChange}
+                ></lightning-input>
+            </template>
+            <template if:true={isInputCheckBox}>
+                <!-- checkbox - cellValue {cellValue} -->
+                <lightning-input
+                    label={processedTHead.inputConfig.label}
+                    type={processedTHead.inputConfig.type} 
+                    checked={cellValue}
+                    disabled={processedTHead.inputConfig.disabled}
+                    onchange={handleInputChange}
+                ></lightning-input>
+            </template>
+            <template if:true={isNotAllowedInputType}>
+                <!-- <pre style="display: none;">
+                    processedTHead.inputConfig.disabled -- {processedTHead.inputConfig.disabled}
+                </pre> -->
+                <lightning-input 
+                    placeholder={processedTHead.inputConfig.placeholder} 
+                    type={processedTHead.inputConfig.type}
+                    variant={processedTHead.inputConfig.variant} 
+                    value={cellValue} label={processedTHead.inputConfig.label}
+                    disabled={processedTHead.inputConfig.disabled}
+                    onchange={handleInputChange}
+                ></lightning-input>
+            </template>
+        </template>
+        <template if:false={isInputConfig}>
+            <!-- Default case if input config is not present -->
+            <lightning-input 
+                type="text" 
+                variant="label-hidden" 
+                value={cellValue} 
+                label="Enter Text"
+                onchange={handleInputChange}
+            ></lightning-input>
+        </template>
+    </template>
+    <template if:true={processedTHead.isNestedTable}>
+        <c-reusable-table
+            table-head={subTHead} 
+            table-data={subTData} 
+            hide-header={processedTHead.hideHeader}
+            main-class={mainClass}
+        ></c-reusable-table>
+    </template>
+    <template if:true={processedTHead.isButtonSection}>
+        <!-- <button class="slds-button slds-button_neutral" for:each={processedTHead.buttons} data-key={processedTHead.key}
+            data-button-name={button.buttonName} for:item="button" key={button.buttonName} onclick={handleClick}>
+            {button.buttonName}
+        </button> -->
+        <div class="slds-cell-wrap">
+            <template for:each={cellValue} for:item="button" >
+                <button class="slds-button slds-button_neutral slds-m-around_xx-small"
+                    data-key={processedTHead.key}
+                    data-button-name={button.buttonName}
+                    data-pay-load={button.payLoad}
+                    key={button.buttonName} 
+                    onclick={handleClick}
+                    if:true={button.show}
+                    disabled={button.disabled}
+                >
+                    {button.buttonName}
+                </button>
+            </template>
+        </div>
+        <!-- <lightning-button variant="base"  for:each={cellValue} for:item="button" key={button.buttonName}  data-key={processedTHead.key} label={button.buttonName} title={button.buttonName} onclick={handleClick}></lightning-button> -->
+    </template>
+</template>
